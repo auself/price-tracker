@@ -11,7 +11,7 @@ import {
 import {
   Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
-import { categories, companyUnits, items, priceRecords, suppliers } from "@/data/demo-data";
+import { companyUnits, items, priceRecords, suppliers } from "@/data/demo-data";
 import { getLatestPricePerSupplierAndUnit, getPriceInBdt } from "@/lib/price-calculations";
 
 const navGroups = [
@@ -79,6 +79,7 @@ export default function DashboardPage() {
                   const className = `flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-[13px] transition ${selected ? "bg-brand-soft font-semibold text-brand-dark" : "text-[#58635e] hover:bg-canvas hover:text-ink"}`;
                   if (label === "Price records") return <Link key={label} href="/price-records" onClick={() => { setActiveNav(label); setMobileNavOpen(false); }} className={className}><Icon size={17} strokeWidth={1.8} /><span>{label}</span></Link>;
                   if (label === "Price comparison") return <Link key={label} href="/price-comparison" onClick={() => { setActiveNav(label); setMobileNavOpen(false); }} className={className}><Icon size={17} strokeWidth={1.8} /><span>{label}</span></Link>;
+                  if (label === "Analytics & reports") return <Link key={label} href="/analytics" onClick={() => { setActiveNav(label); setMobileNavOpen(false); }} className={className}><Icon size={17} strokeWidth={1.8} /><span>{label}</span></Link>;
                   if (group.label === "MASTER DATA") return <Link key={label} href="/master-data" onClick={() => setMobileNavOpen(false)} className={className}><Icon size={17} strokeWidth={1.8} /><span>{label}</span></Link>;
                   return <button key={label} onClick={() => { setActiveNav(label); setMobileNavOpen(false); }} className={className}><Icon size={17} strokeWidth={selected ? 2.2 : 1.8} /><span>{label}</span>{label === "Suggestions" && <span className="ml-auto rounded-md bg-[#fff0d7] px-1.5 py-0.5 text-[10px] font-semibold text-[#986018]">3</span>}</button>;
                 })}
@@ -114,7 +115,7 @@ export default function DashboardPage() {
             <div><div className="mb-2 flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-brand" /><p className="text-xs font-semibold text-brand">OVERVIEW</p></div><h1 className="text-[26px] font-bold tracking-tight sm:text-[30px]">Price intelligence</h1><p className="mt-1.5 text-sm text-muted">Track supplier prices and spot changes across your company units.</p></div>
             <div className="flex flex-wrap items-center gap-2">
               <label className="flex h-10 items-center gap-2 rounded-lg border border-line bg-white px-3 text-xs text-[#58635e]"><Building2 size={15} className="text-muted" /><select value={unitFilter} onChange={(event) => setUnitFilter(event.target.value)} className="max-w-[150px] bg-transparent outline-none"><option value="all">All company units</option>{companyUnits.map((unit) => <option key={unit.id} value={unit.id}>{unit.name}</option>)}</select><ChevronDown size={13} /></label>
-              <button onClick={() => setActiveNav("Price records")} className="flex h-10 items-center gap-2 rounded-lg bg-brand px-4 text-xs font-semibold text-white shadow-sm transition hover:bg-brand-dark"><Package size={15} /> Add price record</button>
+              <Link href="/price-records" className="flex h-10 items-center gap-2 rounded-lg bg-brand px-4 text-xs font-semibold text-white shadow-sm transition hover:bg-brand-dark"><Package size={15} /> Add price record</Link>
             </div>
           </div>
 
