@@ -77,6 +77,7 @@ export default function DashboardPage() {
                 {group.links.map(({ label, icon: Icon }) => {
                   const selected = activeNav === label;
                   const className = `flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-[13px] transition ${selected ? "bg-brand-soft font-semibold text-brand-dark" : "text-[#58635e] hover:bg-canvas hover:text-ink"}`;
+                  if (label === "Price records") return <Link key={label} href="/price-records" onClick={() => { setActiveNav(label); setMobileNavOpen(false); }} className={className}><Icon size={17} strokeWidth={1.8} /><span>{label}</span></Link>;
                   if (group.label === "MASTER DATA") return <Link key={label} href="/master-data" onClick={() => setMobileNavOpen(false)} className={className}><Icon size={17} strokeWidth={1.8} /><span>{label}</span></Link>;
                   return <button key={label} onClick={() => { setActiveNav(label); setMobileNavOpen(false); }} className={className}><Icon size={17} strokeWidth={selected ? 2.2 : 1.8} /><span>{label}</span>{label === "Suggestions" && <span className="ml-auto rounded-md bg-[#fff0d7] px-1.5 py-0.5 text-[10px] font-semibold text-[#986018]">3</span>}</button>;
                 })}
