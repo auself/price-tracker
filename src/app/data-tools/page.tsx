@@ -190,7 +190,7 @@ export default function DataToolsPage() {
         const companyUnitCode = get("companyUnitCode");
         const effectiveDate = get("effectiveDate");
         const parsedDate = new Date(effectiveDate + "T00:00:00.000Z");
-        const validDate = /^\\d{4}-\\d{2}-\\d{2}$/.test(effectiveDate) && !Number.isNaN(parsedDate.getTime()) && parsedDate.toISOString().slice(0, 10) === effectiveDate;
+        const validDate = /^\d{4}-\d{2}-\d{2}$/.test(effectiveDate) && !Number.isNaN(parsedDate.getTime()) && parsedDate.toISOString().slice(0, 10) === effectiveDate;
         const rawPrice = get("unitPrice");
         const rawCurrency = get("currency").toUpperCase();
         const measurementUnit = get("measurementUnit");
