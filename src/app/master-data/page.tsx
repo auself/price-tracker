@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { ArrowLeft, Building2, Check, ChevronDown, CirclePlus, Edit2, Layers3, Package, Search, Tags, Truck, X } from "lucide-react";
 import { categories as initialCategories, companyUnits as initialUnits, items as initialItems, suppliers as initialSuppliers } from "@/data/demo-data";
@@ -44,7 +44,7 @@ export default function MasterDataPage() {
     Object.entries(record).forEach(([key, value]) => { values[key] = String(value); });
     setForm(values); setEditingId(record.id); setShowForm(true); setNotice("");
   };
-  const saveRecord = (event: React.FormEvent<HTMLFormElement>) => {
+  const saveRecord = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const id = editingId ?? `${section.toLowerCase().replaceAll(" ", "-")}-${Date.now()}`;
     if (section === "Items") {
