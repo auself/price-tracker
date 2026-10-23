@@ -15,7 +15,7 @@ import { companyUnits, items, priceRecords, suppliers } from "@/data/demo-data";
 import { getLatestPricePerSupplierAndUnit, getPriceInBdt } from "@/lib/price-calculations";
 
 const navGroups = [
-  { label: "WORKSPACE", links: [{ label: "Dashboard", icon: LayoutDashboard }, { label: "Price records", icon: Wallet }, { label: "Price comparison", icon: TrendingUp }, { label: "Price history", icon: CalendarDays }, { label: "Analytics & reports", icon: FileSpreadsheet }] },
+  { label: "WORKSPACE", links: [{ label: "Dashboard", icon: LayoutDashboard }, { label: "Price records", icon: Wallet }, { label: "Price comparison", icon: TrendingUp }, { label: "Price history", icon: CalendarDays }, { label: "Analytics & reports", icon: FileSpreadsheet }, { label: "Excel import/export", icon: Download }] },
   { label: "MASTER DATA", links: [{ label: "Items", icon: Package }, { label: "Categories", icon: Tags }, { label: "Suppliers", icon: Truck }, { label: "Company units", icon: Building2 }] },
   { label: "ADMINISTRATION", links: [{ label: "Suggestions", icon: Bell }, { label: "User management", icon: Users }, { label: "Settings", icon: Settings2 }] },
 ];
@@ -80,8 +80,10 @@ export default function DashboardPage() {
                   if (label === "Price records") return <Link key={label} href="/price-records" onClick={() => { setActiveNav(label); setMobileNavOpen(false); }} className={className}><Icon size={17} strokeWidth={1.8} /><span>{label}</span></Link>;
                   if (label === "Price comparison") return <Link key={label} href="/price-comparison" onClick={() => { setActiveNav(label); setMobileNavOpen(false); }} className={className}><Icon size={17} strokeWidth={1.8} /><span>{label}</span></Link>;
                   if (label === "Analytics & reports") return <Link key={label} href="/analytics" onClick={() => { setActiveNav(label); setMobileNavOpen(false); }} className={className}><Icon size={17} strokeWidth={1.8} /><span>{label}</span></Link>;
+                  if (label === "Excel import/export") return <Link key={label} href="/data-tools" onClick={() => { setActiveNav(label); setMobileNavOpen(false); }} className={className}><Icon size={17} strokeWidth={1.8} /><span>{label}</span></Link>;
                   if (group.label === "MASTER DATA") return <Link key={label} href="/master-data" onClick={() => setMobileNavOpen(false)} className={className}><Icon size={17} strokeWidth={1.8} /><span>{label}</span></Link>;
-                  return <button key={label} onClick={() => { setActiveNav(label); setMobileNavOpen(false); }} className={className}><Icon size={17} strokeWidth={selected ? 2.2 : 1.8} /><span>{label}</span>{label === "Suggestions" && <span className="ml-auto rounded-md bg-[#fff0d7] px-1.5 py-0.5 text-[10px] font-semibold text-[#986018]">3</span>}</button>;
+                  if (label === "Suggestions") return <Link key={label} href="/data-tools#suggestions" onClick={() => { setActiveNav(label); setMobileNavOpen(false); }} className={className}><Icon size={17} strokeWidth={1.8} /><span>{label}</span></Link>;
+                  return <button key={label} onClick={() => { setActiveNav(label); setMobileNavOpen(false); }} className={className}><Icon size={17} strokeWidth={selected ? 2.2 : 1.8} /><span>{label}</span></button>;
                 })}
               </nav>
             </div>
