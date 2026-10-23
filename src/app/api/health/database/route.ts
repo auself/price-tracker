@@ -1,9 +1,20 @@
 import { NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 
+const REQUIRED_TABLES = [
+  "app_users",
+  "company_units",
+  "categories",
+  "items",
+  "suppliers",
+  "price_records",
+  "price_suggestions",
+  "audit_events",
+] as const;
+
 /**
- * Minimal connectivity check. Never returns database details or connection strings.
- * This route confirms connectivity only; it does not prove that migrations are applied.
+ * Checks database connectivity and whether the initial schema is installed.
+ * Never returns credentials, SQL errors, or connection details.
  */
 export async function GET() {
   if (!process.env.DATABASE_URL) {
@@ -16,7 +27,37 @@ export async function GET() {
   try {
     const sql = getDb();
     await sql`select 1 as connected`;
-    return NextResponse.json({ status: "connected" }, { status: 200 });
+
+    const missingTables = await sql`
+      select table_name
+      from (values
+        ('app_users'),
+        ('company_units'),
+        ('categories'),
+        ('items'),
+        ('suppliers'),
+        ('price_records'),
+        ('price_suggestions'),
+        ('audit_events')
+      ) as required(table_name)
+      where to_regclass('public.' || table_name) is null
+    `;
+
+    if (missingTables.length > 0) {
+      return NextResponse.json(
+        {
+          status: "schema_missing",
+          message: "Database is reachable, but the initial schema is incomplete.",
+          missing_tables: missingTables.map((row) => row.table_name),
+        },
+        { status: 503 }
+      );
+    }
+
+    return NextResponse.json(
+      { status: "connected", schema: "ready" },
+      { status: 200 }
+    );
   } catch {
     return NextResponse.json(
       { status: "unavailable", message: "Database connection failed." },
