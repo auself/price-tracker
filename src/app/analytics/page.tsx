@@ -10,8 +10,6 @@ import {
   FileSpreadsheet,
   Filter,
   Package,
-  TrendingDown,
-  TrendingUp,
   Wallet,
 } from "lucide-react";
 import {
@@ -270,7 +268,7 @@ export default function AnalyticsPage() {
               })}</tbody>
             </table>
           </div>}
-          <div className="border-t border-line px-5 py-3 text-[10px] leading-5 text-muted sm:px-6">This report uses demo records only. Print / Save PDF uses the browser's print dialog; a downloadable Excel export is planned for the import/export milestone.</div>
+          <div className="border-t border-line px-5 py-3 text-[10px] leading-5 text-muted sm:px-6">This report uses demo records only. Print / Save PDF uses the browser&apos;s print dialog; a downloadable Excel export is planned for the import/export milestone.</div>
         </section>
       </div>
     </main>
