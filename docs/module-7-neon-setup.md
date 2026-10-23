@@ -6,7 +6,7 @@ Neon database: `au-price-tracker`
 
 - Neon serverless PostgreSQL driver and server-only database client.
 - Initial PostgreSQL schema for users/roles, company units, categories, items, suppliers, price records, suggestions, and audit events.
-- `GET /api/health/database` connectivity check. It returns only a status and never exposes credentials or database errors.
+- `GET /api/health/database` checks connection and verifies that all eight required tables exist. It never exposes credentials or database errors.
 - Setup instructions. The migration is **not** applied automatically.
 
 ## Configure the connection
@@ -15,11 +15,15 @@ Neon database: `au-price-tracker`
 2. In Vercel → Project → Settings → Environment Variables, add `DATABASE_URL` for Preview first, then Production when ready. Keep it server-side; never prefix it with `NEXT_PUBLIC_`.
 3. For local development, put the same variable in `.env.local`; do not commit that file or paste credentials into GitHub.
 4. Redeploy the Preview branch after setting the variable.
-5. Open `/api/health/database` on the preview URL. `connected` confirms basic database connectivity only; it does not confirm the schema is installed.
+5. Open `/api/health/database` on the preview URL:
+   - `connected` with `schema: ready`: connection works and all required tables exist.
+   - `not_configured`: `DATABASE_URL` is missing from that deployment environment.
+   - `schema_missing`: database is reachable but the migration is missing or incomplete; review the listed table names.
+   - `unavailable`: the connection failed; check the environment variable in Vercel without sharing its value in chat.
 
 ## Apply the schema
 
-Review `db/migrations/0001_initial_schema.sql`, then run it against the intended Neon database using the Neon SQL Editor or your preferred migration runner. Confirm all tables and indexes were created before enabling app writes.
+Review `db/migrations/0001_initial_schema.sql`, then run it against the intended Neon database using the Neon SQL Editor or your preferred migration runner. Confirm the health check reports `connected` with `schema: ready` before enabling app writes.
 
 ## Before production use
 
