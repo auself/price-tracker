@@ -18,10 +18,12 @@ export function isRealIsoDate(value: string): boolean {
   return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
 }
 
+export type PriceRecordInput = Omit<PriceRecord, "id" | "createdAt"> & Partial<Pick<PriceRecord, "id" | "createdAt">>;
+
 export function validatePriceRecord(
-  input: Omit<PriceRecord, "id" | "createdAt"> & Partial<Pick<PriceRecord, "id" | "createdAt">>,
+  input: PriceRecordInput,
   knownIds?: { itemIds?: string[]; supplierIds?: string[]; companyUnitIds?: string[] },
-): ValidationResult<PriceRecord> {
+): ValidationResult<PriceRecordInput> {
   const issues: ValidationIssue[] = [];
   if (!input.itemId.trim()) issues.push({ field: "itemId", message: "Select an item." });
   else if (knownIds?.itemIds && !knownIds.itemIds.includes(input.itemId)) issues.push({ field: "itemId", message: "The selected item does not exist." });
@@ -48,8 +50,6 @@ export function validatePriceRecord(
     success: true,
     data: {
       ...input,
-      id: input.id ?? "",
-      createdAt: input.createdAt ?? new Date().toISOString().slice(0, 10),
       remarks: input.remarks?.trim() || undefined,
     },
     issues: [],
