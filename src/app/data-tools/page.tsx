@@ -189,6 +189,8 @@ export default function DataToolsPage() {
         const supplierCode = get("supplierCode");
         const companyUnitCode = get("companyUnitCode");
         const effectiveDate = get("effectiveDate");
+        const parsedDate = new Date(effectiveDate + "T00:00:00.000Z");
+        const validDate = /^\\d{4}-\\d{2}-\\d{2}$/.test(effectiveDate) && !Number.isNaN(parsedDate.getTime()) && parsedDate.toISOString().slice(0, 10) === effectiveDate;
         const rawPrice = get("unitPrice");
         const rawCurrency = get("currency").toUpperCase();
         const measurementUnit = get("measurementUnit");
@@ -209,7 +211,7 @@ export default function DataToolsPage() {
         else if (rawCurrency !== "BDT" && (!rate || !Number.isFinite(rate) || rate <= 0)) error = "Foreign-currency prices need a valid BDT exchange rate.";
         const recordKey = item && supplier && unit ? getRecordKey({ itemId: item.id, supplierId: supplier.id, companyUnitId: unit.id, effectiveDate }) : "";
         const duplicate = !error && (existingKeys.has(recordKey) || incomingKeys.has(recordKey));
-        if (recordKey) incomingKeys.add(recordKey);
+        if (!error && recordKey) incomingKeys.add(recordKey);
         return {
           rowNumber: index + 2, itemCode, supplierCode, companyUnitCode, effectiveDate,
           unitPrice: price, currency: rawCurrency as CurrencyCode, measurementUnit,
