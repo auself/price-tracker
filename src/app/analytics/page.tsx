@@ -81,6 +81,7 @@ export default function AnalyticsPage() {
   }, [itemFilter, categoryFilter, supplierFilter, unitFilter, supplierType, fromDate, toDate]);
 
   const trendData = useMemo(() => {
+    if (itemFilter === "all") return [];
     const grouped = new Map<string, { sum: number; count: number; local: number; localCount: number; overseas: number; overseasCount: number }>();
     filteredRecords.forEach((record) => {
       const price = getPriceInBdt(record);
@@ -106,9 +107,10 @@ export default function AnalyticsPage() {
       overseas: group.overseasCount ? Number((group.overseas / group.overseasCount).toFixed(2)) : null,
       count: group.count,
     }));
-  }, [filteredRecords]);
+  }, [filteredRecords, itemFilter]);
 
   const supplierData = useMemo(() => {
+    if (itemFilter === "all") return [];
     const latest = new Map<string, PriceRecord>();
     filteredRecords.forEach((record) => {
       const key = record.supplierId;
@@ -123,18 +125,14 @@ export default function AnalyticsPage() {
       date: record.effectiveDate,
       unit: record.measurementUnit,
     })).filter((entry) => entry.price !== null).sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
-  }, [filteredRecords]);
+  }, [filteredRecords, itemFilter]);
 
   const comparableRecords = filteredRecords.filter((record) => getPriceInBdt(record) !== null && compatible(record, record.itemId));
   const comparablePrices = comparableRecords.map((record) => getPriceInBdt(record)!).filter(Number.isFinite);
-  const average = comparablePrices.length ? comparablePrices.reduce((sum, value) => sum + value, 0) / comparablePrices.length : null;
-  const latestRecord = [...filteredRecords].sort((a, b) => b.effectiveDate.localeCompare(a.effectiveDate))[0];
-  const oldestRecord = [...filteredRecords].sort((a, b) => a.effectiveDate.localeCompare(b.effectiveDate))[0];
-  const latestPrice = latestRecord ? getPriceInBdt(latestRecord) : null;
-  const oldestPrice = oldestRecord ? getPriceInBdt(oldestRecord) : null;
-  const priceChange = latestPrice !== null && oldestPrice !== null && oldestPrice !== 0
-    ? ((latestPrice - oldestPrice) / oldestPrice) * 100
+  const average = itemFilter !== "all" && comparablePrices.length
+    ? comparablePrices.reduce((sum, value) => sum + value, 0) / comparablePrices.length
     : null;
+  const latestRecord = [...filteredRecords].sort((a, b) => b.effectiveDate.localeCompare(a.effectiveDate))[0];
 
   const resetFilters = () => {
     setItemFilter("all");
@@ -205,14 +203,14 @@ export default function AnalyticsPage() {
         <div className="mb-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           <MetricCard label="Filtered records" value={String(filteredRecords.length)} detail="Matching current filters" icon={<FileSpreadsheet size={17} />} />
           <MetricCard label="Comparable prices" value={String(comparableRecords.length)} detail="Valid BDT conversion and unit" icon={<Package size={17} />} />
-          <MetricCard label="Average comparable price" value={average === null ? "—" : money(average)} detail="Across matching records" icon={<Wallet size={17} />} />
-          <MetricCard label="First-to-latest change" value={priceChange === null ? "—" : `${priceChange > 0 ? "+" : ""}${priceChange.toFixed(2)}%`} detail={latestRecord && oldestRecord ? `${dateLabel(oldestRecord.effectiveDate)} → ${dateLabel(latestRecord.effectiveDate)}` : "Insufficient records"} icon={priceChange !== null && priceChange < 0 ? <TrendingDown size={17} /> : <TrendingUp size={17} />} />
+          <MetricCard label="Average comparable price" value={average === null ? "—" : money(average)} detail={itemFilter === "all" ? "Select one item for a meaningful average" : "Across matching records"} icon={<Wallet size={17} />} />
+          <MetricCard label="Latest update" value={latestRecord ? dateLabel(latestRecord.effectiveDate) : "—"} detail="Most recent matching record" icon={<CalendarDays size={17} />} />
         </div>
 
         <div className="grid gap-5 xl:grid-cols-2">
           <section className="rounded-2xl border border-line bg-white p-5 shadow-panel sm:p-6">
-            <div className="mb-5"><h2 className="text-sm font-bold">Recorded price trend</h2><p className="mt-1 text-xs text-muted">Monthly average of comparable prices, converted to BDT</p></div>
-            {trendData.length < 1 ? <EmptyChart /> : <div className="h-[300px]">
+            <div className="mb-5"><h2 className="text-sm font-bold">Recorded price trend</h2><p className="mt-1 text-xs text-muted">Monthly average for one selected item, converted to BDT</p></div>
+            {itemFilter === "all" ? <EmptyChart message="Select one item to view a meaningful price trend." /> : trendData.length < 1 ? <EmptyChart /> : <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={trendData} margin={{ top: 10, right: 10, left: -12, bottom: 0 }}>
                   <CartesianGrid stroke="#edf0ed" strokeDasharray="3 3" vertical={false} />
@@ -231,7 +229,7 @@ export default function AnalyticsPage() {
 
           <section className="rounded-2xl border border-line bg-white p-5 shadow-panel sm:p-6">
             <div className="mb-5"><h2 className="text-sm font-bold">Latest comparable price by supplier</h2><p className="mt-1 text-xs text-muted">Latest matching record per supplier · BDT equivalent</p></div>
-            {supplierData.length < 1 ? <EmptyChart /> : <div className="h-[300px]">
+            {itemFilter === "all" ? <EmptyChart message="Select one item to compare supplier prices fairly." /> : supplierData.length < 1 ? <EmptyChart /> : <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={supplierData.slice(0, 8)} layout="vertical" margin={{ top: 4, right: 14, left: 12, bottom: 4 }}>
                   <CartesianGrid stroke="#edf0ed" strokeDasharray="3 3" horizontal={false} />
@@ -287,6 +285,6 @@ function MetricCard({ label, value, detail, icon }: { label: string; value: stri
   return <div className="rounded-2xl border border-line bg-white p-5"><div className="flex items-center gap-2 text-xs text-muted">{icon}{label}</div><p className="mt-3 text-2xl font-bold">{value}</p><p className="mt-1 text-[11px] text-muted">{detail}</p></div>;
 }
 
-function EmptyChart() {
-  return <div className="flex h-[300px] flex-col items-center justify-center rounded-xl bg-canvas px-6 text-center"><BarChart3 size={26} className="text-muted" /><p className="mt-3 text-sm font-semibold">Not enough comparable data</p><p className="mt-1 max-w-xs text-xs leading-5 text-muted">Adjust the filters or add price records with compatible units and valid exchange rates.</p></div>;
+function EmptyChart({ message }: { message?: string }) {
+  return <div className="flex h-[300px] flex-col items-center justify-center rounded-xl bg-canvas px-6 text-center"><BarChart3 size={26} className="text-muted" /><p className="mt-3 text-sm font-semibold">{message ? "Choose an item" : "Not enough comparable data"}</p><p className="mt-1 max-w-xs text-xs leading-5 text-muted">{message ?? "Adjust the filters or add price records with compatible units and valid exchange rates."}</p></div>;
 }
