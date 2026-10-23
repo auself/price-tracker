@@ -58,11 +58,11 @@ export function validatePriceRecord(
 
 export function findDuplicatePriceRecord(
   candidate: Pick<PriceRecord, "itemId" | "supplierId" | "companyUnitId" | "effectiveDate">,
-  records: Pick<PriceRecord, "itemId" | "supplierId" | "companyUnitId" | "effectiveDate">[],
+  records: (Pick<PriceRecord, "itemId" | "supplierId" | "companyUnitId" | "effectiveDate"> & Partial<Pick<PriceRecord, "id">>)[],
   excludeId?: string,
 ): boolean {
   return records.some((record) =>
-    (!excludeId || !("id" in record) || record.id !== excludeId) &&
+    (!excludeId || record.id !== excludeId) &&
     record.itemId === candidate.itemId &&
     record.supplierId === candidate.supplierId &&
     record.companyUnitId === candidate.companyUnitId &&
