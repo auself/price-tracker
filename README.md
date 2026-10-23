@@ -155,12 +155,12 @@ Check an item only after it has been implemented and tested.
 - [ ] Reusable layout, form, table, chart, dialog, filter, and status components
 - [ ] Shared types for items, categories, suppliers, units, users, price records, comparisons, and suggestions
 - [ ] Separate calculation logic from UI components
-- [ ] Shared validation layer
-- [ ] Typed service interfaces for items, suppliers, prices, comparisons, reports, and suggestions
-- [ ] Repository/data-access interfaces so demo data can later be replaced by database access
+- [x] Shared validation layer
+- [x] Typed service/repository contracts for master data, price records, and suggestions (comparison/report services can be added when their service layer is extracted)
+- [x] Read-only demo repository adapters so demo data can later be replaced by database access
 - [ ] Typed demo data for initial development
-- [ ] Environment-based configuration for secrets and environment-specific settings
-- [ ] Supabase/PostgreSQL integration point and migration directory
+- [x] Environment variable example for future Supabase configuration (real values remain unset)
+- [x] Supabase/PostgreSQL integration point and initial schema migration prepared (not applied to a live database)
 - [ ] Keep architecture modular without unnecessary complexity
 
 ## 12. Backend Integration — Later Phase
@@ -214,7 +214,7 @@ Check an item only after it has been implemented and tested.
 - [ ] **M3 — Price UI and logic:** price forms, history tables, validation, comparison calculations.
 - [ ] **M4 — Analytics:** dashboard, trends, filters, and reports.
 - [ ] **M5 — Excel and suggestions UI:** import/export screens, validation preview, review workflow.
-- [ ] **M6 — Integration preparation:** typed services, repository interfaces, database schema, environment setup.
+- [x] **M6 — Integration preparation:** typed services, repository interfaces, database schema, environment setup (schema prepared only; no live database connection yet).
 - [ ] **M7 — Backend:** authentication, persistence, access policies, audit history, real imports/exports.
 - [ ] **M8 — Release readiness:** tests, security review, responsive checks, documentation, backups, deployment.
 
@@ -240,3 +240,8 @@ Check an item only after it has been implemented and tested.
 
 ## Current Status
 This checklist is the implementation roadmap, not a claim that the features are already built. Mark items complete only after implementation and verification. Demo data and frontend role states do not replace production authentication, database persistence, or server-side security.
+
+
+## Integration preparation status
+
+The integration-preparation milestone introduces a shared validation layer, typed repository contracts, read-only demo adapters, an environment-variable example, and an initial Supabase/PostgreSQL migration. These files prepare the application for a later backend connection; they do not connect a database, add authentication, persist UI changes, or provide production authorization policies. The migration has not been applied to a live project. Before backend activation, review the schema, add and test role-aware Row Level Security policies and audit triggers, configure real environment variables in the deployment platform, and verify the migration against a development database.
