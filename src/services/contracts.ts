@@ -24,10 +24,10 @@ export interface MutableRepository<T extends { id: string }> extends ReadReposit
   deactivate?(id: string): Promise<void>;
 }
 
-export interface ItemRepository extends MutableRepository<Item> {}
-export interface CategoryRepository extends MutableRepository<ItemCategory> {}
-export interface SupplierRepository extends MutableRepository<Supplier> {}
-export interface CompanyUnitRepository extends MutableRepository<CompanyUnit> {}
+export type ItemRepository = MutableRepository<Item>;
+export type CategoryRepository = MutableRepository<ItemCategory>;
+export type SupplierRepository = MutableRepository<Supplier>;
+export type CompanyUnitRepository = MutableRepository<CompanyUnit>;
 
 export interface PriceRecordRepository extends ReadRepository<PriceRecord> {
   listByItem(itemId: string): Promise<PriceRecord[]>;
