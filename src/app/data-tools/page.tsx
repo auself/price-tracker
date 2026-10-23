@@ -204,7 +204,7 @@ export default function DataToolsPage() {
         if (!item) error = "Unknown item code: " + itemCode;
         else if (!supplier) error = "Unknown supplier code: " + supplierCode;
         else if (!unit) error = "Unknown company unit code: " + companyUnitCode;
-        else if (!/^\d{4}-\d{2}-\d{2}$/.test(effectiveDate) || Number.isNaN(Date.parse(effectiveDate))) error = "Date must use YYYY-MM-DD.";
+        else if (!validDate) error = "Date must be a real calendar date in YYYY-MM-DD format.";
         else if (!rawPrice || !Number.isFinite(price) || price <= 0) error = "Unit price must be a number greater than zero.";
         else if (!currencies.includes(rawCurrency as CurrencyCode)) error = "Unsupported currency: " + rawCurrency;
         else if (!measurementUnit) error = "Measurement unit is required.";
