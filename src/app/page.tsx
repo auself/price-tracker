@@ -11,7 +11,7 @@ import {
 import {
   Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
-import { categories, companyUnits, items, priceRecords, suppliers } from "@/data/demo-data";
+import { companyUnits, items, priceRecords, suppliers } from "@/data/demo-data";
 import { getLatestPricePerSupplierAndUnit, getPriceInBdt } from "@/lib/price-calculations";
 
 const navGroups = [
