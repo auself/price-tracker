@@ -245,3 +245,8 @@ This checklist is the implementation roadmap, not a claim that the features are 
 ## Integration preparation status
 
 The integration-preparation milestone introduces a shared validation layer, typed repository contracts, read-only demo adapters, an environment-variable example, and an initial Supabase/PostgreSQL migration. These files prepare the application for a later backend connection; they do not connect a database, add authentication, persist UI changes, or provide production authorization policies. The migration has not been applied to a live project. Before backend activation, review the schema, add and test role-aware Row Level Security policies and audit triggers, configure real environment variables in the deployment platform, and verify the migration against a development database.
+
+
+## Module 7 — Neon database
+
+See [the Neon setup guide](docs/module-7-neon-setup.md) for connection setup, migration steps, and remaining production requirements.
